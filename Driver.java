@@ -5,7 +5,7 @@ public class Driver {
     public static void main(String[] args){
 
         try { 
-            File file = new File("textFile.txt");
+            File file = new File(args[0]);
             Brain brain = new Brain(file);
             System.out.println(brain.createSentence());
         }
