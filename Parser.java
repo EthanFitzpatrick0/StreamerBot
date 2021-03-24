@@ -1,3 +1,5 @@
+package StreamerBot;
+
 import java.util.*;
 import java.io.*;
 

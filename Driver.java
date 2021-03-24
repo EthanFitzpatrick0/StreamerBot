@@ -1,3 +1,5 @@
+package StreamerBot;
+
 import java.io.*;
 
 public class Driver {
