@@ -21,11 +21,11 @@ Does driver things.
 
 ## TO-DO LIST
 
-    * Pass folder of .txt files instead of single file to Driver
-        * Ultimate goal would be to pass streamer name and automatically rip + transcribe VODs
-    * Incorporate pyTranscriber into script
-        * Right now I am transcribing with the pyTranscriber app, but I should be able to create a python script using pyTranscriber's functions
-    * Add twitch chatbot functionality
-        * Relevantly respond to chatter @
-    * Save token maps and allow addding additional transcriptions after initial build
-    * Make sentence selection algorithm better
+* Pass folder of .txt files instead of single file to Driver
+    * Ultimate goal would be to pass streamer name and automatically rip + transcribe VODs
+* Incorporate pyTranscriber into script
+    * Right now I am transcribing with the pyTranscriber app, but I should be able to create a python script using pyTranscriber's functions
+* Add twitch chatbot functionality
+    * Relevantly respond to chatter @
+* Save token maps and allow addding additional transcriptions after initial build
+* Make sentence selection algorithm better
