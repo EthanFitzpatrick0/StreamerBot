@@ -29,3 +29,4 @@ Does driver things.
     * Relevantly respond to chatter @
 * Save token maps and allow addding additional transcriptions after initial build
 * Make sentence selection algorithm better
+* Improve documentation
