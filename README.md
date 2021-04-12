@@ -27,6 +27,11 @@ Does driver things.
     * Right now I am transcribing with the pyTranscriber app, but I should be able to create a python script using pyTranscriber's functions
 * Add twitch chatbot functionality
     * Relevantly respond to chatter @
-* Save token maps and allow addding additional transcriptions after initial build
+* ~~Save token maps and allow addding additional transcriptions after initial build~~
 * Make sentence selection algorithm better
 * Improve documentation
+
+## Version History
+
+* v0.1.0 : initial upload
+* v0.1.1 : added serialization

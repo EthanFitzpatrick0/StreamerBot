@@ -3,15 +3,21 @@ package StreamerBot;
 import java.util.*;
 import java.io.*;
 
-public class Parser {
+public class Parser implements Serializable{
 
+    private static final long serialVersionUID = -8856780667768139876L;
     private File file;
     private ArrayList<String> tokens = new ArrayList<String>();
     private LinkedHashMap<String,LinkedHashMap<String,Integer>> tokenPairs = new LinkedHashMap<String,LinkedHashMap<String,Integer>>();
     
     //mainly to replace censored words from pyTranscriber output
-    @SuppressWarnings("serial") 
-    LinkedHashMap<String,String> censored = new LinkedHashMap<String,String>() {{
+    
+    LinkedHashMap<String,String> censored = new LinkedHashMap<String,String>() {/**
+         *
+         */
+        private static final long serialVersionUID = 2852739457885646239L;
+
+    {
         put("f***", "fuck");
         put("f******", "fucking");
         put("m***********", "motherfuckin");

@@ -3,8 +3,9 @@ package StreamerBot;
 import java.util.*;
 import java.io.*;
 
-public class Brain {
+public class Brain implements Serializable {
     
+    private static final long serialVersionUID = 1174424660568316968L;
     private Parser parser;
     private LinkedHashMap<String,LinkedHashMap<String,Integer>> memory;
     List<String> memoryArray;
@@ -24,8 +25,26 @@ public class Brain {
         }
         catch(IOException ex) {
             System.out.println("Error reading file within Brain.");
+            System.exit(1);
         }
     }
+
+    public void addMemory(File file) {
+        try{
+            parser = new Parser(file);
+            parser.getData();
+            memory = parser.getTokenPairs();
+            memoryArray.addAll(memory.keySet());
+            memorySize = memory.size();
+            initialFrequency = parser.getInitialFrequency();
+            initialFrequencyArray.addAll(initialFrequency.keySet());
+        }
+        catch(IOException ex) {
+            System.out.println("Error reading file within Brain.");
+            System.exit(1);
+        }
+    } 
+
 
     public int getMemorySize(){
         return memorySize;
