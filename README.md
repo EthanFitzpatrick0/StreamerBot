@@ -31,11 +31,11 @@ Uses autosub (https://github.com/agermanidis/autosub) to do the transcribing.
     * I don't want to just delete the files when I'm done with them, I need to also keep track of the files/dates of the streams that I've already parsed
     * Either that, or I handle this problem when ripping the videos from Twitch (which I haven't gotten to yet). This seems like a better option, but I need a short-term solution for now
     * I wanted to just push something to Git, even if it's not in great condition, because I haven't in a while
-* ~~~Pass folder of .txt files instead of single file to Driver~~~
+* ~~Pass folder of .txt files instead of single file to Driver~~
     * Ultimate goal would be to pass streamer name and automatically rip + transcribe VODs
         * Can now pass streamer name, but it only transcribes. Ripping video shouldn't be too hard, will get to that next.
-* ~~~Incorporate pyTranscriber into script~~~
-    * ~~~Right now I am transcribing with the pyTranscriber app, but I should be able to create a python script using pyTranscriber's functions~~~
+* ~~Incorporate pyTranscriber into script~~
+    * ~~Right now I am transcribing with the pyTranscriber app, but I should be able to create a python script using pyTranscriber's functions~~
     * Was able to create a python script using what pyTranscriber was based off- autosub. I can now automatically transcribe videos.
 * Add twitch chatbot functionality
     * Going to have to learn a bit of JavaScript for this. Shouldn't be too hard, but I'm not sure how to pass the information from java to javascript or if I need to rewrite some code in js.
