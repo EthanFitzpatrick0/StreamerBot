@@ -1,4 +1,4 @@
-package StreamerBot;
+package backend;
 
 import java.util.*;
 import java.io.*;
@@ -6,7 +6,7 @@ import java.io.*;
 public class Parser implements Serializable{
 
     private static final long serialVersionUID = -8856780667768139876L;
-    private File file;
+    private File directory;
     private ArrayList<String> tokens = new ArrayList<String>();
     private LinkedHashMap<String,LinkedHashMap<String,Integer>> tokenPairs = new LinkedHashMap<String,LinkedHashMap<String,Integer>>();
     
@@ -27,6 +27,8 @@ public class Parser implements Serializable{
         put("p****", "pussy");
         put("c***", "cunt");
         put("b****", "bitch");
+        put("b*****", "bitchy");
+        put("b*******", "bitching");
         put("a**", "ass");
         put("i'm", "I'm");
         put("i", "I");
@@ -44,8 +46,8 @@ public class Parser implements Serializable{
         }
     }
 
-    public Parser(File file) {
-        this.file = file;
+    public Parser(File directory) {
+        this.directory = directory;
     }
 
     public ArrayList<String> getTokens() {
@@ -67,17 +69,19 @@ public class Parser implements Serializable{
         }
     }
 
-    //retrieves data from txt file
+    //retrieves data from all files in directory
     public void getData() throws IOException {
-        Scanner scanner = new Scanner(file);
-        while(scanner.hasNext()){ //split into separate words
-            List<String> line = Arrays.asList(scanner.nextLine().split(" "));
-            uncensorTokens(line);
-            pairTokens(line); //pair tokens by each line so that end of sentence isn't paired with beginning of next sentence
-        }
-        scanner.close();
-        for(int i = 0; i < tokens.size(); i++){ //remove punctuation
-            tokens.set(i,(tokens.get(i).replaceAll("[\\p{Punct}&&[^']]|(?<![a-zA-Z])'|'(?![a-zA-Z])","")));
+        for(File file : directory.listFiles()) {
+            Scanner scanner = new Scanner(file);
+            while(scanner.hasNext()){ //split into separate words
+                List<String> line = Arrays.asList(scanner.nextLine().split(" "));
+                uncensorTokens(line);
+                pairTokens(line); //pair tokens by each line so that end of sentence isn't paired with beginning of next sentence
+            }
+            scanner.close();
+            for(int i = 0; i < tokens.size(); i++){ //remove punctuation
+                tokens.set(i,(tokens.get(i).replaceAll("[\\p{Punct}&&[^']]|(?<![a-zA-Z])'|'(?![a-zA-Z])","")));
+            }
         }
     }
 

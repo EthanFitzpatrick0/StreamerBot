@@ -1,4 +1,4 @@
-package StreamerBot;
+package backend;
 
 import java.util.*;
 import java.io.*;
@@ -13,9 +13,9 @@ public class Brain implements Serializable {
     private LinkedHashMap<String,Integer> initialFrequency;
     List<String> initialFrequencyArray;
     
-    public Brain(File file) {
+    public Brain(File directory) {
         try{
-            parser = new Parser(file);
+            parser = new Parser(directory);
             parser.getData();
             memory = parser.getTokenPairs();
             memoryArray = new ArrayList<String>(memory.keySet());
@@ -24,14 +24,14 @@ public class Brain implements Serializable {
             initialFrequencyArray = new ArrayList<String>(initialFrequency.keySet());
         }
         catch(IOException ex) {
-            System.out.println("Error reading file within Brain.");
+            System.out.println("Error reading from directory within Brain.");
             System.exit(1);
         }
     }
 
-    public void addMemory(File file) {
+    public void addMemory(File directory) {
         try{
-            parser = new Parser(file);
+            parser = new Parser(directory);
             parser.getData();
             memory = parser.getTokenPairs();
             memoryArray.addAll(memory.keySet());
@@ -40,7 +40,7 @@ public class Brain implements Serializable {
             initialFrequencyArray.addAll(initialFrequency.keySet());
         }
         catch(IOException ex) {
-            System.out.println("Error reading file within Brain.");
+            System.out.println("Error reading from directory within Brain.");
             System.exit(1);
         }
     } 

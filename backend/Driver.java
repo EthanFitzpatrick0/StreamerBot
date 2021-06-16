@@ -1,4 +1,4 @@
-package StreamerBot;
+package backend;
 
 import java.io.*;
 import java.nio.file.*;
@@ -9,22 +9,15 @@ public class Driver {
     public static void main(String[] args){
         
         if(args.length == 0) {
-            System.out.println("Must input a file name/path.");
+            System.out.println("Must input a streamer name.");
             System.exit(1);
         }
 
         Brain brain = null;
-        
-        File file = new File(args[0]);
-        String fileName = file.getName();
-        int indexOfUnderscore = fileName.lastIndexOf("_");
-        if (indexOfUnderscore == -1) {
-            System.out.println("Incorrect file name format. \nFile name must be in the format streamerName_date.txt");
-            System.exit(1);
-        }
-        String streamer = fileName.substring(0, indexOfUnderscore);
-        Path serFolder = Paths.get(file.getAbsolutePath()).getParent();
-        String serFilePath = serFolder + "\\Ser\\" + streamer + ".ser";    
+    
+        String streamer = args[0];
+        File directory = new File(Paths.get("").toAbsolutePath().toString() + "\\Autosub_Output\\" + streamer);
+        String serFilePath = Paths.get("").toAbsolutePath().toString() + "\\Streamer_Ser\\" + streamer + ".ser";    
         
         try {
             File serFile = new File(serFilePath);
@@ -37,7 +30,10 @@ public class Driver {
                 serFileInputStream.close();
                 objectInStream.close();
             }
-            
+            else if(!directory.exists() || !directory.isDirectory() || directory.list().length == 0) { //if no serialization OR autosub output exists, terminate
+                System.out.println("No transcriptions available for this streamer.");
+                System.exit(1);
+                }
         }
         catch(IOException ex) {
             System.out.println("Deserialization error.");
@@ -49,8 +45,8 @@ public class Driver {
         }
 
         try {
-            if(brain == null) brain = new Brain(file); //if no .ser file, create new brain
-            else brain.addMemory(file); //otherwise add to existing brain
+            if(brain == null) brain = new Brain(directory); //if no .ser file, create new brain
+            else brain.addMemory(directory); //otherwise add to existing brain
             Scanner input = new Scanner(System.in);
             boolean exit = false;
             String inputLine;
@@ -76,7 +72,7 @@ public class Driver {
             System.exit(1);
         }
         catch(NullPointerException ex){
-            System.out.println("Expected a file name to be passed via command line.");
+            System.out.println("Expected a streamer name to be passed via command line.");
             System.exit(1);
         }
         catch(IOException ex){
