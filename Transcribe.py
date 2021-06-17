@@ -17,6 +17,7 @@ if __name__ == '__main__':
     if not os.path.exists(outputDir):
         os.system('mkdir .\Autosub_Output\\' + streamer)
 
+    #list of files in the autosub output directory
     outputFiles = os.listdir(outputDir)
 
     if not os.path.isdir(inputDir) or not os.listdir(inputDir):
