@@ -2,6 +2,8 @@ package backend;
 
 import java.util.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Parser implements Serializable{
 
@@ -71,18 +73,31 @@ public class Parser implements Serializable{
 
     //retrieves data from all files in directory
     public void getData() throws IOException {
+
+        //file that contains list of transcriptions already added to brain's memory
+        String streamerParsedFileName = "Streamer_Ser\\" + directory.getName() + ".txt";
+        File streamerParsed = new File(streamerParsedFileName);
+        streamerParsed.createNewFile(); //create file if not already there
+        List<String> streamerParsedFiles = Files.readAllLines(Paths.get(streamerParsedFileName)); //list of transcriptions already added to brain's memory
+
         for(File file : directory.listFiles()) {
-            Scanner scanner = new Scanner(file);
-            while(scanner.hasNext()){ //split into separate words
-                List<String> line = Arrays.asList(scanner.nextLine().split(" "));
-                uncensorTokens(line);
-                pairTokens(line); //pair tokens by each line so that end of sentence isn't paired with beginning of next sentence
+            if(!streamerParsedFiles.contains(file.getName())) {
+                Scanner scanner = new Scanner(file);
+                while(scanner.hasNext()){ //split into separate words
+                    List<String> line = Arrays.asList(scanner.nextLine().split(" "));
+                    uncensorTokens(line);
+                    pairTokens(line); //pair tokens by each line so that end of sentence isn't paired with beginning of next sentence
+                }
+                scanner.close();
+                for(int i = 0; i < tokens.size(); i++){ //remove punctuation
+                    tokens.set(i,(tokens.get(i).replaceAll("[\\p{Punct}&&[^']]|(?<![a-zA-Z])'|'(?![a-zA-Z])","")));
+                }
+                Writer w = new FileWriter(streamerParsed, true);
+                w.append(file.getName());
+                w.append(System.getProperty("line.separator"));
+                w.close(); 
             }
-            scanner.close();
-            for(int i = 0; i < tokens.size(); i++){ //remove punctuation
-                tokens.set(i,(tokens.get(i).replaceAll("[\\p{Punct}&&[^']]|(?<![a-zA-Z])'|'(?![a-zA-Z])","")));
-            }
-        }
+        }   
     }
 
     //pairs line's tokens together

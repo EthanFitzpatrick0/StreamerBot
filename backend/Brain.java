@@ -33,7 +33,7 @@ public class Brain implements Serializable {
         try{
             parser = new Parser(directory);
             parser.getData();
-            memory = parser.getTokenPairs();
+            memory.putAll(parser.getTokenPairs());
             memoryArray.addAll(memory.keySet());
             memorySize = memory.size();
             initialFrequency = parser.getInitialFrequency();
