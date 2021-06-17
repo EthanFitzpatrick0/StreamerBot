@@ -24,6 +24,30 @@ Controls the brain & parser. Takes a streamer name and uses the output of Transl
 Transcribes mp4 videos into text files. Takes a streamer name and iteratively goes through videos found in the streamer's folder, transcribing the videos into text files.
 Uses autosub (https://github.com/agermanidis/autosub) to do the transcribing.
 
+## Dependencies
+
+* [autosub](https://github.com/agermanidis/autosub)
+   * autosub is no longer supported, and can be annoying to get working. I basically used [this](https://www.programmersought.com/article/57056237908/) guide. At the end of the day, you need Python 2.7 installed and autosub_app.py under C:\Python27\Scripts\
+* ffmpeg
+
+## Usage
+
+Honestly, I wasn't planning on having anyone else use it at this point. I'm mostly trying to keep up my programming skills while looking for a job. But I noticed that I've had git clones in the last few days, so I might as well make some sort of a guide on how to use this mess that I wrote. After all, why make something if no one else can use it?
+
+1) Put videos that need to be transcribed under StreamerBot\Twitch_VODs\streamer where "streamer" is the name of the streamer whose videos you intend to transcribe.
+2) Run Transcribe.py with Python3 with the streamer's name as an argument, e.g.
+        
+        py -3 Transcribe.py TrainwrecksTV
+      
+3) Wait for the transcription process to complete (this should take a while, especially for long broadcasts). To test, you could create a small mp4 with some audio. The output will eventually be found under StreamerBot\Autosub_Output\streamer
+4) Once the transcriptions are complete, run Driver.class with the streamer name as an argument, e.g.
+
+        java backend.Driver TrainwrecksTV
+        
+   It will take a bit to create the mappings, especially if multiple broadcasts are being processed. When you exit, it will serialize the Brain file, allowing it to run much faster the next time. However, this is broken right now (see URGENT under TO-DO LIST). If you delete/move the transcriptions out of StreamerBot\Autosub_Output\streamer once the serialization takes place, the deserialization should work as intended, but I'll admit that I haven't tested it since the recent changes.
+5) While the driver is running, pressing enter will generate a new sentence. There are a few other commands, but they are mainly for debugging purposes. Eventually the way the driver works will be redone. I don't intend for this to be the way the chatbot works. It needs to connect to the Twitch API through Node.js, but I'm still figuring that out.
+
+
 ## TO-DO LIST
 
 * URGENT: currently parses through text files in respective streamer's folder, but does not delete them
