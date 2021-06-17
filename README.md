@@ -32,7 +32,7 @@ Uses autosub (https://github.com/agermanidis/autosub) to do the transcribing.
 
 ## Usage
 
-Honestly, I wasn't planning on having anyone else use it at this point. I'm mostly trying to keep up my programming skills while looking for a job. But I noticed that I've had git clones in the last few days, so I might as well make some sort of a guide on how to use this mess that I wrote. After all, why make something if no one else can use it?
+Honestly, I wasn't planning on having anyone else use it at this point. I'm mostly trying to keep up my programming skills while looking for a job. But I noticed that I've had git clones in the last few days, so I might as well make some sort of a guide. After all, why make something if no one else can use it?
 
 1) Put videos that need to be transcribed under StreamerBot\Twitch_VODs\streamer where "streamer" is the name of the streamer whose videos you intend to transcribe.
 2) Run Transcribe.py with Python3 with the streamer's name as an argument, e.g.
@@ -44,29 +44,24 @@ Honestly, I wasn't planning on having anyone else use it at this point. I'm most
 
         java backend.Driver TrainwrecksTV
         
-   It will take a bit to create the mappings, especially if multiple broadcasts are being processed. When you exit, it will serialize the Brain file, allowing it to run much faster the next time. However, this is broken right now (see URGENT under TO-DO LIST). If you delete/move the transcriptions out of StreamerBot\Autosub_Output\streamer once the serialization takes place, the deserialization should work as intended, but I'll admit that I haven't tested it since the recent changes.
-5) While the driver is running, pressing enter will generate a new sentence. There are a few other commands, but they are mainly for debugging purposes. Eventually the way the driver works will be redone. I don't intend for this to be the way the chatbot works. It needs to connect to the Twitch API through Node.js, but I'm still figuring that out.
+   It will take a bit to create the mappings, especially if multiple broadcasts are being processed. When you exit, it will serialize the Brain file, allowing it to run much faster the next time.
+5) While the driver is running, pressing enter will generate a new sentence. "help" will display the short list of commands. Eventually the way the driver works will be redone. I don't intend for this to be the way the chatbot works. It needs to connect to the Twitch API through Node.js, but I'm still figuring that out.
 
 
 ## TO-DO LIST
 
-* URGENT: currently parses through text files in respective streamer's folder, but does not delete them
-    * This means every time program is run, it deserializes what has already been parsed + tries to parse through and add what is already there to the data set
-    * I don't want to just delete the files when I'm done with them, I need to also keep track of the files/dates of the streams that I've already parsed
-    * Either that, or I handle this problem when ripping the videos from Twitch (which I haven't gotten to yet). This seems like a better option, but I need a short-term solution for now
-    * I wanted to just push something to Git, even if it's not in great condition, because I haven't in a while
-* ~~Pass folder of .txt files instead of single file to Driver~~
-    * Ultimate goal would be to pass streamer name and automatically rip + transcribe VODs
-        * Can now pass streamer name, but it only transcribes. Ripping video shouldn't be too hard, will get to that next.
-* ~~Incorporate pyTranscriber into script~~
-    * ~~Right now I am transcribing with the pyTranscriber app, but I should be able to create a python script using pyTranscriber's functions~~
-    * Was able to create a python script using what pyTranscriber was based off- autosub. I can now automatically transcribe videos.
+* Automate ripping video from Twitch
 * Add twitch chatbot functionality
     * Going to have to learn a bit of JavaScript for this. Shouldn't be too hard, but I'm not sure how to pass the information from java to javascript or if I need to rewrite some code in js.
     * Relevantly respond to chatter @
-* ~~Save token maps and allow addding additional transcriptions after initial build~~
 * Make sentence selection algorithm better
 * Improve documentation
+
+# TO-DO LIST items finished
+
+* Pass folder of .txt files instead of single file to Driver
+* Incorporate autosub into script
+* Save token maps and allow addding additional transcriptions after initial build
 
 ## Version History
 
