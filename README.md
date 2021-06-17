@@ -57,7 +57,7 @@ Honestly, I wasn't planning on having anyone else use it at this point. I'm most
 * Make sentence selection algorithm better
 * Improve documentation
 
-# TO-DO LIST items finished
+### TO-DO LIST items finished
 
 * Pass folder of .txt files instead of single file to Driver
 * Incorporate autosub into script
