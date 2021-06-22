@@ -7,3 +7,6 @@ Twitch_VODs/*
 
 # Project files
 .vscode
+
+# serialized test data
+Streamer_Ser/*
