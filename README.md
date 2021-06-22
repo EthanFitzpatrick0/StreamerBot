@@ -50,6 +50,7 @@ Honestly, I wasn't planning on having anyone else use it at this point. I'm most
 
 ## TO-DO LIST
 
+* Urgent- discovered issue where the data is not being sorted properly. Essentially, words are not being chosen based off their frequency as they are supposed to in the current state. Words coming at the beginning of sentences are still being picked based off frequency, however. I will fix this tomorrow.
 * Automate ripping video from Twitch
 * Add twitch chatbot functionality
     * Going to have to learn a bit of JavaScript for this. Shouldn't be too hard, but I'm not sure how to pass the information from java to javascript or if I need to rewrite some code in js.
