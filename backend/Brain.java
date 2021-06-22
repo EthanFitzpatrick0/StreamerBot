@@ -54,7 +54,7 @@ public class Brain implements Serializable {
     //2) prioritization system for words that show up more often
 
     public String createSentence(){
-        List<String> currentWordArray;
+        List<String> currentWordArray = new ArrayList<>(parser.getWordFrequency().keySet());
         String sentence, currentWord;
         int sentenceLength, min, max, maxSentenceLength;
         sentence = "";

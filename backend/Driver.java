@@ -50,6 +50,7 @@ public class Driver {
             Scanner input = new Scanner(System.in);
             boolean exit = false;
             String inputLine;
+            System.out.println("Press enter for a generated sentence.");
             while(exit == false) { //read user input
                 inputLine = input.nextLine();
                 if(inputLine.equals("exit")) exit = true;

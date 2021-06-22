@@ -9,8 +9,13 @@ public class Parser implements Serializable{
 
     private static final long serialVersionUID = -8856780667768139876L;
     private File directory;
+    
     private ArrayList<String> tokens = new ArrayList<String>();
     private LinkedHashMap<String,LinkedHashMap<String,Integer>> tokenPairs = new LinkedHashMap<String,LinkedHashMap<String,Integer>>();
+    
+    private LinkedHashMap<String,Integer> initialFrequency = new LinkedHashMap<String,Integer>();
+
+    private LinkedHashMap<String,Integer> wordFrequency = new LinkedHashMap<String,Integer>();
     
     //mainly to replace censored words from pyTranscriber output
     
@@ -36,7 +41,6 @@ public class Parser implements Serializable{
         put("i", "I");
     }};
 
-    private LinkedHashMap<String,Integer> initialFrequency = new LinkedHashMap<String,Integer>();
     public static void main(String[] args){
         File file = new File("textFile.txt");
         Parser parser = new Parser(file);
@@ -64,6 +68,10 @@ public class Parser implements Serializable{
         return initialFrequency;
     }
     
+    public LinkedHashMap<String,Integer> getWordFrequency(){
+        return wordFrequency;
+    }
+
     public static void makeLowercase(List<String> strings) {
         ListIterator<String> iterator = strings.listIterator();
         while (iterator.hasNext()) {
@@ -80,8 +88,10 @@ public class Parser implements Serializable{
         streamerParsed.createNewFile(); //create file if not already there
         List<String> streamerParsedFiles = Files.readAllLines(Paths.get(streamerParsedFileName)); //list of transcriptions already added to brain's memory
 
+        boolean changed = false; //keep track of whether memory was changed
         for(File file : directory.listFiles()) {
             if(!streamerParsedFiles.contains(file.getName())) {
+                changed = true;
                 Scanner scanner = new Scanner(file);
                 while(scanner.hasNext()){ //split into separate words
                     List<String> line = Arrays.asList(scanner.nextLine().split(" "));
@@ -97,7 +107,14 @@ public class Parser implements Serializable{
                 w.append(System.getProperty("line.separator"));
                 w.close(); 
             }
-        }   
+        }
+        if(changed) {
+            wordFrequency = MapUtil.sortByValue(wordFrequency); //sort map of words' occurrence frequencies
+            initialFrequency = MapUtil.sortByValue(initialFrequency); //sort map of words frequently at beginning of sentences
+            for(LinkedHashMap<String,Integer> map: tokenPairs.values()) { //sort all token's maps by frequency of occurrence
+                map = MapUtil.sortByValue(map);
+            }
+        }
     }
 
     //pairs line's tokens together
@@ -105,23 +122,31 @@ public class Parser implements Serializable{
         if(initialFrequency.containsKey(tokens.get(0))) initialFrequency.put(tokens.get(0), initialFrequency.get(tokens.get(0)) + 1);
         else initialFrequency.put(tokens.get(0), 1);
         for(int i = 0; i < tokens.size() - 1; i++){
-
-            if(tokenPairs.get(tokens.get(i)) == null) { //check to see if key already has a frequency map
+            String currentWord = tokens.get(i);
+            if(tokenPairs.get(currentWord) == null) { //check to see if key already has a frequency map
                 LinkedHashMap<String,Integer> newTokenFrequencyList = new LinkedHashMap<String,Integer>(); //calling it a "list" because I'm treating it as a list of strings that happens to keep track of their frequency of usage
                 newTokenFrequencyList.put(tokens.get(i+1),1); //add new token with frequency 1
-                tokenPairs.put(tokens.get(i), newTokenFrequencyList); //add new frequency list to token mapping
+                tokenPairs.put(currentWord, newTokenFrequencyList); //add new frequency list to token mapping
             }
             else { //just add value to the key's list if already present
-                if(tokenPairs.get(tokens.get(i)).containsKey(tokens.get(i+1))) {
-                    tokenPairs.get(tokens.get(i)).put(tokens.get(i+1), tokenPairs.get(tokens.get(i)).get(tokens.get(i+1))+1);
+                if(tokenPairs.get(currentWord).containsKey(tokens.get(i+1))) {
+                    tokenPairs.get(currentWord).put(tokens.get(i+1), tokenPairs.get(currentWord).get(tokens.get(i+1))+1);
                 }
-                else tokenPairs.get(tokens.get(i)).put(tokens.get(i+1), 1);
+                else tokenPairs.get(currentWord).put(tokens.get(i+1), 1);
+                
+                wordFrequency.put(currentWord, wordFrequency.get(currentWord) + 1); //record that word has appeared again
+            }
+
+            //keep track of word occurrence frequency
+            if(wordFrequency.containsKey(currentWord)) wordFrequency.put(currentWord, wordFrequency.get(currentWord) + 1);
+            else wordFrequency.put(currentWord, 1);
+            if(i == tokens.size() - 2) { //need to keep track of last word as well
+                String lastWord = tokens.get(i + 1);
+                if(wordFrequency.containsKey(lastWord)) wordFrequency.put(lastWord, wordFrequency.get(lastWord) + 1);
+                else wordFrequency.put(lastWord, 1);
             }
         }
-        initialFrequency = MapUtil.sortByValue(initialFrequency); //sort map of words frequently at beginning of sentences
-        for(LinkedHashMap<String,Integer> map: tokenPairs.values()){ //sort all token's maps by frequency of occurrence
-            map = MapUtil.sortByValue(map);
-        }
+
     }
 
     //pyTranscriber, or more likely the Google API, censors swear words. This is unnecessary for our purposes,
