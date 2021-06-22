@@ -1,3 +1,9 @@
 ### Java ###
 # Compiled class file
 *.class
+
+# All twitch VODs
+Twitch_VODs/*
+
+# Project files
+.vscode
