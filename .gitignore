@@ -1,5 +1,5 @@
 *.class
-Twitch_VODs/*
+VODs/*
 .vscode
-Streamer_Ser/*
+Records/*
 *.pyc
