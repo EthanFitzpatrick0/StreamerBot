@@ -28,8 +28,8 @@ Uses autosub (https://github.com/agermanidis/autosub) to do the transcribing.
 
 * Java, Python2, and Python3
 * [autosub](https://github.com/agermanidis/autosub)
-   * Run `pip install`
    * Install [ffmpeg](https://www.ffmpeg.org/)
+   * Run `pip install autosub`.
 
 ## Usage
 
