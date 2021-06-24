@@ -21,7 +21,7 @@ Controls the brain & parser. Takes a streamer name and uses the output of Transl
 
 ### Transcribe.py
 
-Transcribes mp4 videos into text files. Takes a streamer name and iteratively goes through videos found in the streamer's folder, transcribing the videos into text files.
+Transcribes videos into text files. Takes a streamer name and iteratively goes through videos found in the streamer's folder, transcribing the videos into text files.
 Uses autosub (https://github.com/agermanidis/autosub) to do the transcribing.
 
 ## Dependencies
