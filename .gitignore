@@ -1,5 +1,6 @@
 *.class
-VODs/*
 .vscode
-Records/*
 *.pyc
+Records/*
+VODs/*
+Transcriptions/*
