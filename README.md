@@ -26,9 +26,10 @@ Uses autosub (https://github.com/agermanidis/autosub) to do the transcribing.
 
 ## Dependencies
 
+* Java, Python2, and Python3
 * [autosub](https://github.com/agermanidis/autosub)
-   * autosub is no longer supported, and can be annoying to get working. I basically used [this](https://www.programmersought.com/article/57056237908/) guide. At the end of the day, you need Python 2.7 installed and autosub_app.py under C:\Python27\Scripts\
-* ffmpeg
+   * Run `pip install`
+   * Install [ffmpeg](https://www.ffmpeg.org/)
 
 ## Usage
 
