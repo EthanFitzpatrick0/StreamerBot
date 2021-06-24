@@ -28,7 +28,7 @@ if __name__ == '__main__':
         if inputFile[:-4]+'.txt' not in outputFiles:
             outputPath = 'Autosub_Output\\' + streamer + '\\' + inputFile[:-4] + '.txt'
             inputPath = 'Twitch_VODs\\' + streamer + '\\' + inputFile
-            subprocess.run(['C:\Python27\python.exe', 'C:\Python27\Scripts\\autosub_app.py', '-o', outputPath, '-S', 'en', '-D', 'en', inputPath])
+            subprocess.run(['py', '-2', 'autosub_app.py', '-o', outputPath, '-S', 'en', '-D', 'en', inputPath])
             
             with open(outputPath, 'r') as reader:
                 lines = reader.readlines()
