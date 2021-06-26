@@ -6,20 +6,27 @@ import java.io.*;
 public class Brain implements Serializable {
     
     private static final long serialVersionUID = 1174424660568316968L;
+    
     private Parser parser;
+    private ArrayList<String> parsedFiles;
+
     private LinkedHashMap<String,LinkedHashMap<String,Integer>> memory;
     List<String> memoryArray;
     private int memorySize;
+    
     private LinkedHashMap<String,Integer> initialFrequency;
     List<String> initialFrequencyArray;
     
     public Brain(File directory) {
         try{
             parser = new Parser(directory);
-            parser.getData();
+            if(parsedFiles == null) parsedFiles = new ArrayList<String>();
+            parser.getData(parsedFiles);
+           
             memory = parser.getTokenPairs();
             memoryArray = new ArrayList<String>(memory.keySet());
             memorySize = memory.size();
+            
             initialFrequency = parser.getInitialFrequency();
             initialFrequencyArray = new ArrayList<String>(initialFrequency.keySet());
         }
@@ -32,10 +39,13 @@ public class Brain implements Serializable {
     public void addMemory(File directory) {
         try{
             parser = new Parser(directory);
-            parser.getData();
+            if(parsedFiles == null) parsedFiles = new ArrayList<String>();
+            parser.getData(parsedFiles);
+           
             memory.putAll(parser.getTokenPairs());
             memoryArray.addAll(memory.keySet());
             memorySize = memory.size();
+            
             initialFrequency = parser.getInitialFrequency();
             initialFrequencyArray.addAll(initialFrequency.keySet());
         }
@@ -54,7 +64,7 @@ public class Brain implements Serializable {
     //2) prioritization system for words that show up more often
 
     public String createSentence(){
-        List<String> currentWordArray = new ArrayList<>(parser.getWordFrequency().keySet());
+        List<String> currentWordArray;
         String sentence, currentWord;
         int sentenceLength, min, max, maxSentenceLength;
         sentence = "";
@@ -81,18 +91,39 @@ public class Brain implements Serializable {
 
     private int selectIndex(int size){
         Random rng = new Random();
-        if(size < 4) return rng.nextInt(size); //if only 3 connections or less, just return random word, ignoring frequency
-        int frequent = rng.nextInt(1); //0 for top 25%, 1 for bottom 75%
-        int quarter = size/4;
+        int bound;
         int index = 0;
+        if(size < 4) bound = 1;
+        else if(size < 5) bound = 3;
+        else if(size < 10) bound = 4;
+        else if(size < 20) bound = 5;
+        else bound = 6;
 
-        if(frequent == 0) { //select an index from the first quarter of indexes
-            index = rng.nextInt(quarter);
+        int frequency = rng.nextInt(bound);
+        //0 = full size, 1: bottom 75%, 2: top 25%, 3: top 20%, 4: top 10%, 5: top 5%
+        switch(frequency) {
+            case 0: //full size
+                index = rng.nextInt(size);
+                break;
+            case 1: //bottom 75%
+                index = (int) ((Math.random() * (size - (size/4)) + (size/4)));
+                break;
+            case 2: //top 25%
+                index = rng.nextInt(size/4);
+                break;
+            case 3: //top 20%
+                index = rng.nextInt(size/5);
+                break;
+            case 4: //top 10%
+                index = rng.nextInt(size/10);
+                break;
+            case 5: //top 5%
+                index = rng.nextInt(size/20);
+                break;
+            default: //full size (should never reach)
+                index = rng.nextInt(size);
+                break;
         }
-        else { //select an index from bottom three quarters of indexes
-            index = (int) ((Math.random() * (size - quarter) + quarter));
-        }
-        
         return index;
     }
 }

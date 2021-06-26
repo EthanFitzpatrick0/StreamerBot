@@ -2,8 +2,6 @@ package memory;
 
 import java.util.*;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class Parser implements Serializable{
 
@@ -14,10 +12,8 @@ public class Parser implements Serializable{
     private LinkedHashMap<String,LinkedHashMap<String,Integer>> tokenPairs = new LinkedHashMap<String,LinkedHashMap<String,Integer>>();
     
     private LinkedHashMap<String,Integer> initialFrequency = new LinkedHashMap<String,Integer>();
-
-    private LinkedHashMap<String,Integer> wordFrequency = new LinkedHashMap<String,Integer>();
     
-    //mainly to replace censored words from pyTranscriber output
+    //replace censored words from autosub output
     
     LinkedHashMap<String,String> censored = new LinkedHashMap<String,String>() {/**
          *
@@ -30,28 +26,21 @@ public class Parser implements Serializable{
         put("b****", "bitch");
         put("b*****", "bitchy");
         put("b*******", "bitching");
+        put("b******", "bitchin'");
         put("c***", "cunt");
         put("f***", "fuck");
+        put("f*****", "fuckin'");
         put("f******", "fucking");
         put("i'm", "I'm");
         put("i", "I");
-        put("m***********", "motherfuckin");
+        put("m***********", "motherfuckin'");
         put("m************", "motherfucking");
         put("p****", "pussy");
         put("s***", "shit");
         put("s*****", "shitty");
+        put("s*******", "shitting");
+        put("s******", "shittin'");
     }};
-
-    public static void main(String[] args){
-        File file = new File("textFile.txt");
-        Parser parser = new Parser(file);
-        try{
-            parser.getData();
-        }
-        catch(IOException ex){
-            System.out.println("Error reading file in Parser.");
-        }
-    }
 
     public Parser(File directory) {
         this.directory = directory;
@@ -68,10 +57,6 @@ public class Parser implements Serializable{
     public LinkedHashMap<String,Integer> getInitialFrequency(){
         return initialFrequency;
     }
-    
-    public LinkedHashMap<String,Integer> getWordFrequency(){
-        return wordFrequency;
-    }
 
     public static void makeLowercase(List<String> strings) {
         ListIterator<String> iterator = strings.listIterator();
@@ -81,17 +66,11 @@ public class Parser implements Serializable{
     }
 
     //retrieves data from all files in directory
-    public void getData() throws IOException {
-
-        //file that contains list of transcriptions already added to brain's memory
-        String streamerParsedFileName = "Records\\" + directory.getName() + "\\" + directory.getName() + "_parsed.txt";
-        File streamerParsed = new File(streamerParsedFileName);
-        streamerParsed.createNewFile(); //create file if not already there
-        List<String> streamerParsedFiles = Files.readAllLines(Paths.get(streamerParsedFileName)); //list of transcriptions already added to brain's memory
+    public List<String> getData(List<String> parsedFiles) throws IOException {
 
         boolean changed = false; //keep track of whether memory was changed
         for(File file : directory.listFiles()) {
-            if(!streamerParsedFiles.contains(file.getName())) {
+            if(!parsedFiles.contains(file.getName())) {
                 changed = true;
                 Scanner scanner = new Scanner(file);
                 while(scanner.hasNext()){ //split into separate words
@@ -103,19 +82,16 @@ public class Parser implements Serializable{
                 for(int i = 0; i < tokens.size(); i++){ //remove punctuation
                     tokens.set(i,(tokens.get(i).replaceAll("[\\p{Punct}&&[^']]|(?<![a-zA-Z])'|'(?![a-zA-Z])","")));
                 }
-                Writer w = new FileWriter(streamerParsed, true);
-                w.append(file.getName());
-                w.append(System.getProperty("line.separator"));
-                w.close(); 
+                parsedFiles.add(file.getName());
             }
         }
         if(changed) {
-            wordFrequency = MapUtil.sortByValue(wordFrequency); //sort map of words' occurrence frequencies
             initialFrequency = MapUtil.sortByValue(initialFrequency); //sort map of words frequently at beginning of sentences
-            for(LinkedHashMap<String,Integer> map: tokenPairs.values()) { //sort all token's maps by frequency of occurrence
-                map = MapUtil.sortByValue(map);
+            for(String word : tokenPairs.keySet()) {
+                tokenPairs.replace(word, MapUtil.sortByValue(tokenPairs.get(word))); //sort all tokens' maps by frequency of occurrence
             }
         }
+        return parsedFiles;
     }
 
     //pairs line's tokens together
@@ -134,24 +110,15 @@ public class Parser implements Serializable{
                     tokenPairs.get(currentWord).put(tokens.get(i+1), tokenPairs.get(currentWord).get(tokens.get(i+1))+1);
                 }
                 else tokenPairs.get(currentWord).put(tokens.get(i+1), 1);
-                
-                wordFrequency.put(currentWord, wordFrequency.get(currentWord) + 1); //record that word has appeared again
-            }
-
-            //keep track of word occurrence frequency
-            if(wordFrequency.containsKey(currentWord)) wordFrequency.put(currentWord, wordFrequency.get(currentWord) + 1);
-            else wordFrequency.put(currentWord, 1);
-            if(i == tokens.size() - 2) { //need to keep track of last word as well
-                String lastWord = tokens.get(i + 1);
-                if(wordFrequency.containsKey(lastWord)) wordFrequency.put(lastWord, wordFrequency.get(lastWord) + 1);
-                else wordFrequency.put(lastWord, 1);
             }
         }
 
     }
 
-    //pyTranscriber, or more likely the Google API, censors swear words. This is unnecessary for our purposes,
-    //and it also messes with the punctuation removal regex
+    /*
+        autosub, or more likely the Google API, censors swear words. This is unnecessary for our purposes,
+        and it also messes with the punctuation removal regex
+    */
     private void uncensorTokens(List<String> line) {
         makeLowercase(line);
         for(String censoredSwear: censored.keySet()){
