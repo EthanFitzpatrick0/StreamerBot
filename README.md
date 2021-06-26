@@ -56,7 +56,8 @@ Honestly, I wasn't planning on having anyone else use it at this point. I'm most
 * Option to limit amount of broadcasts you want to download
 * Delete broadcasts when done with transcription (pretty easy but it's late and I've been working for a while)
 * Right now, I'm picking words based on their order of frequency, but this doesn't completely account for frequency; i.e- a map could be `["I":2445, "we":4]` . Even though "I
-" has appeared MUCH more frequently than "we", right now the algorithm will put it to a 50% chance of picking either. I'm going to look into assigning words individual weight.  
+" has appeared MUCH more frequently than "we", right now the algorithm will put it to a 50% chance of picking either. I'm going to look into assigning words individual weight.
+* Serialization is working, but it turns out that with my new optimizations, it seems that deserializing takes longer than the actual parsing. Going to look into if this should be the case. I might end up having to just remove serialization.
 * Add twitch chatbot functionality
     * Going to have to learn a bit of JavaScript for this. Shouldn't be too hard, but I'm not sure how to pass the information from java to javascript or if I need to rewrite some code in js.
     * Relevantly respond to chatter @
