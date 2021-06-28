@@ -3,9 +3,8 @@ package memory;
 import java.util.*;
 import java.io.*;
 
-public class Parser implements Serializable{
+public class Parser {
 
-    private static final long serialVersionUID = -8856780667768139876L;
     private File directory;
     
     private ArrayList<String> tokens = new ArrayList<String>();
