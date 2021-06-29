@@ -40,7 +40,6 @@ public class Brain {
     }
 
     public String createSentence(){
-        List<String> currentWordArray;
         String sentence, currentWord;
         int sentenceLength, min, max, maxSentenceLength;
         sentence = "";
@@ -48,14 +47,13 @@ public class Brain {
         max = 20;
         maxSentenceLength = (int) ((Math.random() * (max - min)) + min); //max length the sentence can be
         
-        currentWord = initialFrequencyArray.get(selectIndex(initialFrequencyArray.size()));
+        currentWord = selectWord(initialFrequency);
         sentence = currentWord;
         sentenceLength = 1;
         
         while(sentenceLength < maxSentenceLength && memory.get(currentWord) != null) { //keeps going until it hits the max sentence length OR it runs out of word connections
             
-            currentWordArray = new ArrayList<String>(memory.get(currentWord).keySet());
-            currentWord = currentWordArray.get(selectIndex(currentWordArray.size()));
+            currentWord = selectWord(memory.get(currentWord));
             sentence += " " + currentWord;
             sentenceLength++;   
         }
@@ -64,41 +62,48 @@ public class Brain {
         return sentence;
     }
 
-    private int selectIndex(int size){
+    private String selectWord(LinkedHashMap<String,Integer> list){
+        List<String> currentList = new ArrayList<>(list.keySet());
+        int weightedSize = list.values().stream().reduce(0, Integer::sum);
         Random rng = new Random();
         int bound;
-        int index = 0;
-        if(size < 4) bound = 1;
-        else if(size < 5) bound = 3;
-        else if(size < 10) bound = 4;
-        else if(size < 20) bound = 5;
+        int weightedIndex = 0;
+        if(weightedSize < 4) bound = 1;
+        else if(weightedSize < 5) bound = 3;
+        else if(weightedSize < 10) bound = 4;
+        else if(weightedSize < 20) bound = 5;
         else bound = 6;
 
         int frequency = rng.nextInt(bound);
         //0 = full size, 1: bottom 75%, 2: top 25%, 3: top 20%, 4: top 10%, 5: top 5%
         switch(frequency) {
-            case 0: //full size
-                index = rng.nextInt(size);
+            case 0: //full weightedSize
+                weightedIndex = rng.nextInt(weightedSize);
                 break;
             case 1: //bottom 75%
-                index = (int) ((Math.random() * (size - (size/4)) + (size/4)));
+                weightedIndex = (int) ((Math.random() * (weightedSize - (weightedSize/4)) + (weightedSize/4)));
                 break;
             case 2: //top 25%
-                index = rng.nextInt(size/4);
+                weightedIndex = rng.nextInt(weightedSize/4);
                 break;
             case 3: //top 20%
-                index = rng.nextInt(size/5);
+                weightedIndex = rng.nextInt(weightedSize/5);
                 break;
             case 4: //top 10%
-                index = rng.nextInt(size/10);
+                weightedIndex = rng.nextInt(weightedSize/10);
                 break;
             case 5: //top 5%
-                index = rng.nextInt(size/20);
+                weightedIndex = rng.nextInt(weightedSize/20);
                 break;
-            default: //full size (should never reach)
-                index = rng.nextInt(size);
+            default: //full weightedSize (should never reach)
+                weightedIndex = rng.nextInt(weightedSize);
                 break;
         }
-        return index;
+        int currentWeight = weightedIndex;
+        for (String word : currentList) {
+            currentWeight -= list.get(word);
+            if(currentWeight <= 0) return word;
+        }
+        return null;
     }
 }

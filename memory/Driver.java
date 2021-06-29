@@ -16,7 +16,7 @@ public class Driver {
         Brain brain = null;
     
         String streamer = args[0];
-        File directory = new File(Paths.get("").toAbsolutePath().toString() + "\\Transcriptions\\" + streamer); 
+        File directory = new File(Paths.get("").toAbsolutePath().toString() + "\\Streamers\\" + streamer + "\\Transcriptions");
        
         if(!directory.exists() || !directory.isDirectory() || directory.list().length == 0) { //if no serialization OR autosub output exists, terminate
             System.out.println("No transcriptions available for this streamer.");
@@ -24,7 +24,7 @@ public class Driver {
         }
 
         try {
-            brain = new Brain(directory); //if no .ser file, create new brain
+            brain = new Brain(directory);
             Scanner input = new Scanner(System.in);
             boolean exit = false;
             String inputLine;
