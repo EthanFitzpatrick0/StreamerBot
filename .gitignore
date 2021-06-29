@@ -1,6 +1,4 @@
 *.class
 .vscode
 *.pyc
-Records/*
-VODs/*
-Transcriptions/*
+Streamers/*
