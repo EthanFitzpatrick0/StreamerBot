@@ -52,7 +52,6 @@ It's not in a perfectly functional state as of right now, but it *can* currently
 
 ## TO-DO LIST
 
-* Option to limit amount of broadcasts you want to download
 * Add twitch chatbot functionality
     * Going to have to learn a bit of JavaScript for this. Shouldn't be too hard, but I'm not sure how to pass the information from java to javascript or if I need to rewrite some code in js.
     * Relevantly respond to chatter @
@@ -60,6 +59,7 @@ It's not in a perfectly functional state as of right now, but it *can* currently
 
 ### TO-DO LIST items finished
 
+* Option to limit amount of broadcasts you want to download
 * Incorporate weight into word selection algorithm
     * This makes the word/sentence selection algorithm *much* better
 * Automate ripping video from Twitch
