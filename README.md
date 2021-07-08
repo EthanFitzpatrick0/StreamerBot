@@ -39,6 +39,7 @@ Parses transcripts, connects to Twitch, and generates sentences when `!imitate` 
 
 ## TO-DO LIST
 
+* Put censored words into separate text file to reduce clutter (and improve scalability)
 * Add options for chatbot (e.g. generate sentences on a timer in addition or instead of command)
 * Relevantly respond to chatter @
 
