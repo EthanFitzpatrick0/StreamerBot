@@ -9,6 +9,8 @@ const { exit } = require('process')
 
 const streamer = process.argv.slice(2)[0]
 const transcriptionDir = path.join(__dirname, 'Streamers', streamer, 'Transcriptions')
+const censoredText = path.join(__dirname, 'censored.txt')
+
 dotenv.config()
 
 /* all words that have occurred first in a line, containing their frequency */
@@ -21,32 +23,12 @@ var wordPairs = new Map()
 
 /* map containing profanities and other words altered in the transcription/formatting process to change back */
 var censoredMap = new Map()
-censoredMap.set("a**", "ass")
-censoredMap.set("a****", "asses")
-censoredMap.set("a******", "asshole")
-censoredMap.set("a*******", "assholes")
-censoredMap.set("b****", "bitch")
-censoredMap.set("b*****", "bitchy")
-censoredMap.set("b******", "bitches")
-censoredMap.set("b*******", "bitching")
-censoredMap.set("c***", "cunt")
-censoredMap.set("c****", "cunts")
-censoredMap.set("f***", "fuck")
-censoredMap.set("f****", "fucks")
-censoredMap.set("f*****", "fucker")
-censoredMap.set("f******", "fucking")
-censoredMap.set("i'm", "I'm")
-censoredMap.set("i", "I")
-censoredMap.set("m***********", "motherfucker")
-censoredMap.set("m************", "motherfucking")
-censoredMap.set("p****", "pussy")
-censoredMap.set("p******", "pussies")
-censoredMap.set("s***", "shit")
-censoredMap.set("s****", "shits")
-censoredMap.set("s*****", "shitty")
-censoredMap.set("s******", "shitter")
-censoredMap.set("s*******", "shitting")
 
+var cens = fs.readFileSync(censoredText, "utf-8").replaceAll('\r', '').split('\n')
+for (const pair of cens) {
+  let pairArr = pair.split(' ')
+  censoredMap.set(pairArr[1], pairArr[0])
+}
 
 files = fs.readdirSync(transcriptionDir)
 files.forEach( (file) => {
@@ -91,8 +73,13 @@ function formatWords(line) {
   for (let i = 0; i < line.length; i++) {
     line[i] = line[i].toLowerCase()
     line[i] = line[i].replace('\r', '')
-    if (censoredMap.has(line[i])) line[i] = censoredMap.get(line[i])
-    line[i] = line[i].replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()?!"]|(?<![a-zA-Z])'|'(?![a-zA-Z])/g,"")
+    var repl = false
+    if (censoredMap.has(line[i])) {
+      line[i] = censoredMap.get(line[i])
+      repl = true
+    }
+    line[i] = line[i].replaceAll(/[.,\/#!$%\^&\;:{}=\-_`~()?!"]|(?<![a-zA-Z])'|'(?![a-zA-Z])/g,"")
+    if (line[i] == '' || line[i] == '*') line.splice(i, 1)
   }
   return line
 }
@@ -102,7 +89,6 @@ function formatWords(line) {
  * @param {String []} A line from a transcription file 
  */
 function pairWords(line) {
-
   const firstWord = line[0]
   if (initialFrequency.has(firstWord)) {
     initialFrequency.set(firstWord, initialFrequency.get(firstWord) + 1)
