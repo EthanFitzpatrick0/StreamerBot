@@ -229,7 +229,7 @@ function connectTwitch() {
         username: 'imitator_bot',
         password: process.env.TWITCH_OAUTH_TOKEN
     },
-    channels: [ 'OmegaJr0' ] //TODO: change to streamer when done testing
+    channels: [ streamer ]
   });
 
   client.connect()
