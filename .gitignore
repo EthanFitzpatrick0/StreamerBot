@@ -2,3 +2,5 @@
 .vscode
 *.pyc
 Streamers/*
+node_modules/*
+*.env
