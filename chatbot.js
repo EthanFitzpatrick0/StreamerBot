@@ -73,7 +73,6 @@ function formatWords(line) {
   for (let i = 0; i < line.length; i++) {
     line[i] = line[i].toLowerCase()
     line[i] = line[i].replace('\r', '')
-    var repl = false
     if (censoredMap.has(line[i])) {
       line[i] = censoredMap.get(line[i])
       repl = true
@@ -89,24 +88,27 @@ function formatWords(line) {
  * @param {String []} A line from a transcription file 
  */
 function pairWords(line) {
-  const firstWord = line[0]
-  if (initialFrequency.has(firstWord)) {
-    initialFrequency.set(firstWord, initialFrequency.get(firstWord) + 1)
+  if (line.length > 2) {
+    const firstWord = line[0] + ' ' + line[1] + ' ' + line[2]
+    if (initialFrequency.has(firstWord)) {
+      initialFrequency.set(firstWord, initialFrequency.get(firstWord) + 1)
+    }
+    else initialFrequency.set(firstWord, 1)
   }
-  else initialFrequency.set(firstWord, 1)
   
-  for (let i = 0; i < line.length - 1; i++) {
-    var currentWord = line[i]
+  for (let i = 0; i < line.length - 5; i++) {
+    var currentWord = line[i] + ' ' + line[i+1] + ' ' + line[i+2]
+    var connectWord = line[i+3] + ' ' + line[i+4] + ' ' + line[i+5]
     if (wordPairs.get(currentWord) == null) { //add new map if word does not have one yet
       var newMap = new Map()
-      newMap.set(line[i+1], 1)
+      newMap.set(connectWord, 1)
       wordPairs.set(currentWord, newMap)
     }
     else { //add word to current map or increment if already exists
-      if (wordPairs.get(currentWord).has(line[i+1]))
-        wordPairs.get(currentWord).set(line[i+1], wordPairs.get(currentWord).get(line[i+1]) + 1)
+      if (wordPairs.get(currentWord).has(connectWord))
+        wordPairs.get(currentWord).set(connectWord, wordPairs.get(currentWord).get(connectWord) + 1)
       else
-        wordPairs.get(currentWord).set(line[i+1], 1)
+        wordPairs.get(currentWord).set(connectWord, 1)
     }
   }
 }
@@ -119,8 +121,8 @@ function createSentence() {
   var sentence, currentWord
   var sentenceLength, min, max, maxSentenceLength
   sentence = ''
-  min = 10
-  max = 20
+  min = 7
+  max = 15
   maxSentenceLength = Math.floor(Math.random() * (max - min) + min)
 
   currentWord = selectWord(initialFrequency)
@@ -128,8 +130,10 @@ function createSentence() {
   sentenceLength = 1
 
   while(sentenceLength < maxSentenceLength && wordPairs.get(currentWord) != null) {
-
-    currentWord = selectWord(wordPairs.get(currentWord))
+    let prevWord = currentWord
+    do {
+      currentWord = selectWord(wordPairs.get(currentWord))
+    } while (currentWord == prevWord)
     sentence += " " + currentWord
     sentenceLength++
   }
