@@ -64,3 +64,4 @@ Parses transcripts, connects to Twitch, and generates sentences when `!imitate` 
 * v0.1.4 : automatic ripping, change directory/package names to be more intuitive
 * v0.1.5 : improve word selection algorithm, remove serialization
 * v0.2.0 : add chatbot functionality
+* v0.2.1 : improve algorithm- bot talks more like a real person now
