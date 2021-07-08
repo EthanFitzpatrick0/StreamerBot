@@ -44,6 +44,7 @@ Parses transcripts, connects to Twitch, and generates sentences when `!imitate` 
 
 ### TO-DO LIST items finished
 
+* Refactor censored list of words out
 * Add twitch chatbot functionality
 * Improve documentation
 * Option to limit amount of broadcasts you want to download
