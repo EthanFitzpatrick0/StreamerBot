@@ -75,7 +75,6 @@ function formatWords(line) {
     line[i] = line[i].replace('\r', '')
     if (censoredMap.has(line[i])) {
       line[i] = censoredMap.get(line[i])
-      repl = true
     }
     line[i] = line[i].replaceAll(/[.,\/#!$%\^&\;:{}=\-_`~()?!"]|(?<![a-zA-Z])'|'(?![a-zA-Z])/g,"")
     if (line[i] == '' || line[i] == '*') line.splice(i, 1)
