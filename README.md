@@ -40,6 +40,7 @@ Parses transcripts, connects to Twitch, and generates sentences when `!imitate` 
 ## TO-DO LIST
 
 * Add options for chatbot (e.g. generate sentences on a timer in addition or instead of command)
+    * Add username argument for bot- currently using my personal bot's name (Imitator_Bot) which doesn't make sense for distribution purposes
 * Relevantly respond to chatter @
 
 ### TO-DO LIST items finished
