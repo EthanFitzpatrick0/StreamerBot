@@ -29,18 +29,19 @@ Parses transcripts, connects to Twitch, and generates sentences when `!imitate` 
         py -3 Transcribe.py TrainwrecksTV
         
       This will take a while, especially with streamers that stream more often and for longer. For example, I ran this process for a streamer with 33 broadcasts that were up to 16 hours long each, and it took over 24 hours. There's not a lot of optimizing I can do here since it mostly relies on your download speed.
-      
-2) Once the transcriptions are complete, run chatbot.js with the streamer name as an argument, e.g.
+
+2) Set TWITCH_USERNAME and TWITCH_OAUTH_TOKEN in your .env, otherwise the chatbot will fail to connect.
+
+3) Run chatbot.js with the streamer name as an argument, e.g.
 
         node chatbot TrainwrecksTV
         
-3) While the driver is running, sending `!imitate` in the streamer's twitch chat will cause the chatbot to generate a new sentence.
+4) While the driver is running, sending `!imitate` in the streamer's twitch chat will cause the chatbot to generate a new sentence.
 
 
 ## TO-DO LIST
 
 * Add options for chatbot (e.g. generate sentences on a timer in addition or instead of command)
-    * Add username argument for bot- currently using my personal bot's name (Imitator_Bot) which doesn't make sense for distribution purposes
 * Relevantly respond to chatter @
 
 ### TO-DO LIST items finished
