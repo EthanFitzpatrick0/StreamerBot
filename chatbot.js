@@ -49,7 +49,6 @@ connectTwitch()
  * @param {String} The transcription file name 
  */
 function readTranscription(file) {
-  const fileStream = fs.createReadStream(file);
 
   var lines = require('fs').readFileSync(file, 'utf-8')
     .split('\n')
@@ -75,6 +74,7 @@ function formatWords(line) {
     line[i] = line[i].replace('\r', '')
     if (censoredMap.has(line[i])) {
       line[i] = censoredMap.get(line[i])
+      repl = true
     }
     line[i] = line[i].replaceAll(/[.,\/#!$%\^&\;:{}=\-_`~()?!"]|(?<![a-zA-Z])'|'(?![a-zA-Z])/g,"")
     if (line[i] == '' || line[i] == '*') line.splice(i, 1)
@@ -116,7 +116,7 @@ function pairWords(line) {
  * Creates a random sentence out of the current word mappings
  * @returns {String} The randomized generated sentence
  */
-function createSentence() {
+ function createSentence() {
   var sentence, currentWord
   var sentenceLength, min, max, maxSentenceLength
   sentence = ''
@@ -128,8 +128,19 @@ function createSentence() {
   sentence = currentWord
   sentenceLength = 1
 
+  var prevWord = currentWord
   while(sentenceLength < maxSentenceLength && wordPairs.get(currentWord) != null) {
     currentWord = selectWord(wordPairs.get(currentWord))
+    if (currentWord == prevWord) {
+      if (wordPairs.get(currentWord).size > 1) {
+        currentWord = selectDiffWord(wordPairs.get(currentWord), prevWord)
+      }
+      else {
+        currentWord = ''
+        break
+      }
+    }
+    prevWord = currentWord
     sentence += " " + currentWord
     sentenceLength++
   }
@@ -139,8 +150,8 @@ function createSentence() {
 }
 
 /**
- * Selects next word given the current word, favoring words that appear more often
- * @param {String} Word that we are currently on
+ * Selects next word given the current word's connection map, favoring words that appear more often
+ * @param {Map} Map of connections to word that we are currently on
  * @returns {String} The next word selected
  */
 function selectWord(map) {
@@ -158,15 +169,15 @@ function selectWord(map) {
   else if (weightedSize < 20) bound = 5
   else bound = 6
 
-  var frequency = getRandomInt(bound)
+  let frequency = getRandomInt(bound)
 
-  //0 = full size, 1: bottom 75%, 2: top 25%, 3: top 20%, 4: top 10%, 5: top 5%
+  //0 = top 50%, 1: top 75%, 2: top 25%, 3: top 20%, 4: top 10%, 5: top 5%
   switch (frequency) {
-    case 0: //full weightedSize
-      weightedIndex = getRandomInt(weightedSize)
+    case 0: //top 50%
+      weightedIndex = getRandomInt(weightedSize/2)
       break
-    case 1: //bottom 75%
-      weightedIndex = Math.floor(Math.random() * (weightedSize - (weightedSize/4)) + (weightedSize/4))
+    case 1: //top 75%
+      weightedIndex = getRandomInt(weightedSize*(3.0/4.0))
       break
     case 2: //top 25%
       weightedIndex = getRandomInt(weightedSize/4)
@@ -180,7 +191,7 @@ function selectWord(map) {
     case 5: //top 5%
       weightedIndex = getRandomInt(weightedSize/20)
       break
-    default: //full weightedSize (should never reach)
+    default: //full weightedSize
       weightedIndex = getRandomInt(weightedSize)
   }
 
@@ -194,8 +205,21 @@ function selectWord(map) {
 }
 
 /**
+ * 
+ * @param {Map} Map of connections to word that we are currently on
+ * @param {String} The previous word that we are avoiding
+ * @returns {String} The next word selected, differing from previous
+ */
+function selectDiffWord(map, prevWord) {
+  const currentList = Array.from(map.keys())
+  for (const word of currentList) {
+    if (word != prevWord) return word
+  }
+}
+
+/**
  * Returns a random int in the range 0 to max
- * @param {int} Maximum value (exclusive)
+ * @param {Number} Maximum value (exclusive)
  * @returns {int} Random int in the given range
  */
 function getRandomInt(max) {
