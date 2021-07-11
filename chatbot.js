@@ -129,10 +129,7 @@ function createSentence() {
   sentenceLength = 1
 
   while(sentenceLength < maxSentenceLength && wordPairs.get(currentWord) != null) {
-    let prevWord = currentWord
-    do {
-      currentWord = selectWord(wordPairs.get(currentWord))
-    } while (currentWord == prevWord)
+    currentWord = selectWord(wordPairs.get(currentWord))
     sentence += " " + currentWord
     sentenceLength++
   }
@@ -215,7 +212,7 @@ function connectTwitch() {
       reconnect: true
     },
     identity: {
-        username: 'imitator_bot',
+        username: process.env.TWITCH_USERNAME,
         password: process.env.TWITCH_OAUTH_TOKEN
     },
     channels: [ streamer ]
