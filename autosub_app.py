@@ -1,4 +1,6 @@
 #!c:\python27\python.exe
+
+# all credit goes to the contributors at https://github.com/agermanidis/autosub
 import argparse
 import audioop
 from googleapiclient.discovery import build
