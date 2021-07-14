@@ -114,6 +114,7 @@ function pairWords(line) {
 
 /**
  * Creates a random sentence out of the current word mappings
+ * @param {String} Seed that is used to find the first phrase. Default = null
  * @returns {String} The randomized generated sentence
  */
  function createSentence(seed=null) {
@@ -124,10 +125,10 @@ function pairWords(line) {
   max = 15
   maxSentenceLength = Math.floor(Math.random() * (max - min) + min)
 
-  if (seed == null) {
+  if (seed == null) { //select word from list of initial phrases if no seed is provided
     currentWord = selectWord(initialFrequency)
   }
-  else {
+  else { //create map of keys from list of initial phrases that contain the seed
     var substrMap = new Map()
     initialFrequency.forEach( (val, key) => {
       if (key.indexOf(seed) !== -1) {
@@ -145,7 +146,7 @@ function pairWords(line) {
   var prevWord = currentWord
   while(sentenceLength < maxSentenceLength && wordPairs.get(currentWord) != null) {
     currentWord = selectWord(wordPairs.get(currentWord))
-    if (currentWord == prevWord) {
+    if (currentWord == prevWord) { //we want different words/phrases in a row
       if (wordPairs.get(currentWord).size > 1) {
         currentWord = selectDiffWord(wordPairs.get(currentWord), prevWord)
       }
@@ -159,7 +160,7 @@ function pairWords(line) {
     sentenceLength++
   }
   
-  sentence = sentence.substr(0, 1).toUpperCase() + sentence.substring(1) + '.'
+  sentence = sentence.substr(0, 1).toUpperCase() + sentence.substring(1) + '.' //add capitalization to first word and period at end
   return sentence
 }
 
@@ -219,7 +220,7 @@ function selectWord(map) {
 }
 
 /**
- * 
+ * Get first phrase from given map that does not match the phrase that came before in the sentence
  * @param {Map} Map of connections to word that we are currently on
  * @param {String} The previous word that we are avoiding
  * @returns {String} The next word selected, differing from previous
@@ -261,15 +262,15 @@ function connectTwitch() {
   client.on('message', (channel, tags, message, self) => {
       if(self) return;
       
-      if(message.toLowerCase() == '!imitate') {
+      if(message.toLowerCase() == '!imitate') { //generate normal sentence
           client.say(channel, createSentence()); 
       }
       else {
         const strArr = message.split(' ')
-        if (strArr.length > 1 && strArr[0] == '!imitate') {
-          let sentence = createSentence(strArr.slice(1).join(' ').toLowerCase())
+        if (strArr.length > 1 && strArr[0] == '!imitate') { //generate sentence from seed
+          let sentence = createSentence(strArr.slice(1).join(' ').toLowerCase()) //grab chatter's message after "!imitate" and use it as a seed
           if (sentence != null) client.say(channel, sentence)
-          else client.say(channel, `@${tags.username}, what are you talking about?`)
+          else client.say(channel, `@${tags.username}, what are you talking about?`) //message if no sentence could be generated
         }
       }
   });
