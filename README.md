@@ -36,16 +36,16 @@ Parses transcripts, connects to Twitch, and generates sentences when `!imitate` 
 
         node chatbot TrainwrecksTV
         
-4) While the driver is running, sending `!imitate` in the streamer's twitch chat will cause the chatbot to generate a new sentence.
+4) While the driver is running, sending `!imitate` in the streamer's twitch chat will make the chatbot generate a new sentence. `!imitate` followed by a word or short phrase will give the sentence generation a "seed" to work with. It will attempt to create a sentence starting with your input.
 
 
 ## TO-DO LIST
 
 * Add options for chatbot (e.g. generate sentences on a timer in addition or instead of command)
-* Relevantly respond to chatter @
 
 ### TO-DO LIST items finished
 
+* Relevantly respond to chatter @
 * Put censored words into separate text file to reduce clutter (and improve scalability)
 * Add twitch chatbot functionality
 * Improve documentation
@@ -67,3 +67,4 @@ Parses transcripts, connects to Twitch, and generates sentences when `!imitate` 
 * v0.1.5 : improve word selection algorithm, remove serialization
 * v0.2.0 : add chatbot functionality
 * v0.2.1 : improve algorithm- bot talks more like a real person now
+* v0.2.2 : add new command- can now provide a seed that the bot will attempt to use to generate a sentence
