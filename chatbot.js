@@ -116,7 +116,7 @@ function pairWords(line) {
  * Creates a random sentence out of the current word mappings
  * @returns {String} The randomized generated sentence
  */
- function createSentence() {
+ function createSentence(seed=null) {
   var sentence, currentWord
   var sentenceLength, min, max, maxSentenceLength
   sentence = ''
@@ -124,7 +124,21 @@ function pairWords(line) {
   max = 15
   maxSentenceLength = Math.floor(Math.random() * (max - min) + min)
 
-  currentWord = selectWord(initialFrequency)
+  if (seed == null) {
+    currentWord = selectWord(initialFrequency)
+  }
+  else {
+    var substrMap = new Map()
+    initialFrequency.forEach( (val, key) => {
+      if (key.indexOf(seed) !== -1) {
+        substrMap.set(key, val)
+      }
+    });
+    if (substrMap.size == 0) {
+      return null
+    }
+    currentWord = selectWord(substrMap)
+  }
   sentence = currentWord
   sentenceLength = 1
 
@@ -239,7 +253,7 @@ function connectTwitch() {
         username: process.env.TWITCH_USERNAME,
         password: process.env.TWITCH_OAUTH_TOKEN
     },
-    channels: [ streamer ]
+    channels: [ channel ]
   });
 
   client.connect()
@@ -249,6 +263,14 @@ function connectTwitch() {
       
       if(message.toLowerCase() == '!imitate') {
           client.say(channel, createSentence()); 
+      }
+      else {
+        const strArr = message.split(' ')
+        if (strArr.length > 1 && strArr[0] == '!imitate') {
+          let sentence = createSentence(strArr.slice(1).join(' ').toLowerCase())
+          if (sentence != null) client.say(channel, sentence)
+          else client.say(channel, `@${tags.username}, what are you talking about?`)
+        }
       }
   });
 }
